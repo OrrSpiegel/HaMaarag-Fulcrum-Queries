@@ -1,0 +1,54 @@
+-- main:Kfira
+--	season:Kfira/monitoring_event
+--		observations:Kfira/reptile_observations
+
+-- Kfira
+SELECT
+  main.point_name,
+  main.habitat,
+  main._status AS zone,
+  main._record_id AS record_id,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+
+-- Season
+  to_char(date_trunc('day', season.date_place), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', season.time_start), 'HH24:MI') AS time_start,
+  to_char(date_trunc('minute', season.time_end), 'HH24:MI') AS time_end,
+  season.weather,
+  season.temp_shade,
+  season.temp_sun,
+  season.site_descrption,
+  season.stones_flipped,
+
+-- Observations 
+
+  observations._child_record_id,
+  observations._latitude AS observation_lat,
+  observations._latitude AS observation_lon,
+
+  CASE 
+  	WHEN array_length(observations.species_latin, 1) = 3 THEN observations.species_latin[3] 
+    WHEN array_length(observations.species_latin, 1) = 2 THEN observations.species_latin[2] 
+    ELSE observations.species_latin[1] 
+  END AS species,
+  observations.obs_count AS obs_count,
+  observations.parameters AS parameters,
+  observations.status AS status,
+  observations.activity AS activity,
+  observations.tail AS tail, 
+  observations.obs_snout_len AS snout_length,
+  observations.obs_tail_len AS tail_length,
+  observations.obs_regentail_len AS regentail_length,
+  observations.assumed_measurement AS assumed_measurement,
+  observations.orientation AS orientaion,
+  observations.material AS material,
+  observations.obs_notes AS notes
+
+FROM "Kfira" main
+INNER JOIN "Kfira/monitoring_event" season
+USING(_record_id)
+INNER JOIN "Kfira/reptile_observations" observations
+ON season._child_record_id = observations._parent_id
+
+WHERE season.date_place > '2018-01-01'
