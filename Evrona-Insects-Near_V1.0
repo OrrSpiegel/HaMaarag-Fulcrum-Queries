@@ -1,0 +1,44 @@
+-- main:Evrona Insects 2017
+--	event:Evrona Insects 2017/sampling_event
+--		under:Evrona Insects 2017/under_tree
+--		near:Evrona Insects 2017/near_tree
+
+
+-- Evrona Insects - Near Tree
+SELECT
+  main.point_name,
+  main.tree_type,
+  main.monitoring_zone,
+  main._status AS zone,
+  main._record_id AS record_id,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+  main._geometry AS geometry,
+  to_char(date_trunc('day', event.inspection_date), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', event.inspection_time), 'HH24:MI') AS time_start,
+  event.monitors_name,
+  event.near_tree_status AS trap_status,
+  event.near_remarks AS remarks,
+  near.position_n AS position,
+  near.morphospecie_n AS morphospecies,
+  near.count_n AS count,
+  near.individuals_collected_n AS individuals_collected,
+  near.recapture_n_white AS recapture_white,
+  near.recapture_n_green AS recapture_green,
+  near.recapture_n_red AS recapture_red,
+  near.recapture_n_yellow AS recapture_yellow,
+  near.recapture_n_blue AS recapture_blue,
+  near.group_n AS group_,
+  near.size_mm_n AS size_mm,
+  near.color_1_n AS color_1,
+  near.color_2_n AS color_2,
+  near.color_3_n AS color_3,
+  near.unkown_remarks_n AS unkown_remarks,
+  near.photos_n AS photos,
+  near.specie_remark_n AS species_remark
+
+FROM "Evrona Insects 2017" main
+LEFT JOIN "Evrona Insects 2017/sampling_event" event
+USING(_record_id)
+LEFT JOIN "Evrona Insects 2017/near_tree" near
+ON event._child_record_id = near._parent_id
