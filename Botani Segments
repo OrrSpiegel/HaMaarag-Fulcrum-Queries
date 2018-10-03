@@ -19,7 +19,7 @@ SELECT
   event.monitors_south AS "monitors",
   segments._latitude AS "segment_lat",
   segments._longitude AS "segment_lon",
-  segments._record_id AS "UUID",
+  segments._child_record_id AS "UUID",
   segments.segment_id,
   segments.segment_remarks AS "remarks",
 --  segments.species_in_segment_test AS "species count",
