@@ -1,0 +1,43 @@
+-- main:Botani
+--	event:Botani/southern_units
+--		segments:Botani/segments
+--		missing:Botani/missing_segments
+
+
+-- Botani Southern Units - missing
+SELECT
+  main.unit,
+  main.site,
+  main.point_name,
+  main.proximity,
+  main.habitat,
+  main._record_id AS record_id,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+  to_char(date_trunc('day', event.date_south), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', event.time_start_south), 'HH24:MI') AS time_start,
+  event.monitors_south AS "monitors",
+  missing._latitude AS "segment_lat",
+  missing._longitude AS "segment_lon",
+  missing._child_record_id AS "UUID",
+  missing.segment_id_missing AS "segment_id",
+  missing.auto_id_south AS "auto_id",
+  missing.alive_south_missing AS "alive",
+  missing.remarks_missing AS "remarks",
+  missing.species_south_missing_1 AS "species 1",
+  missing.individuals_missing_1 AS "individuals 1",
+  missing.cover_pct_missing_1 AS "pct 1",
+  missing.species_south_missing_2 AS "species 2",
+  missing.individuals_missing_2 AS "individuals 2",
+  missing.cover_pct_missing_2 AS "pct 2",
+  missing.species_south_missing_3 AS "species 3",
+  missing.individuals_missing_3 AS "individuals 3",
+  missing.cover_pct_missing_3 AS "pct 3"
+
+FROM "Botani" main
+LEFT JOIN "Botani/southern_units" event
+USING(_record_id)
+LEFT JOIN "Botani/missing_segments" missing
+ON event._child_record_id = missing._parent_id
+
+WHERE main.unit = 'Mediterranean Transition Zone' AND event.date_south IS NOT NULL
