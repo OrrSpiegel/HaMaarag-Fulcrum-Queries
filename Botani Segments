@@ -1,0 +1,63 @@
+-- main:Botani
+--	event:Botani/southern_units
+--		segments:Botani/segments
+--		missing:Botani/missing_segments
+
+
+-- Botani Southern Units - segments
+SELECT
+  main.unit,
+  main.site,
+  main.point_name,
+  main.proximity,
+  main.habitat,
+  main._record_id AS record_id,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+  to_char(date_trunc('day', event.date_south), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', event.time_start_south), 'HH24:MI') AS time_start,
+  event.monitors_south AS "monitors",
+  segments._latitude AS "segment_lat",
+  segments._longitude AS "segment_lon",
+  segments._record_id AS "UUID",
+  segments.segment_id,
+  segments.segment_remarks AS "remarks",
+--  segments.species_in_segment_test AS "species count",
+  segments.species_south_1 AS "species 1",
+  segments.individuals_1 AS "individuals 1",
+  segments.percent1 AS "pct 1",
+  segments.species_south_2 AS "species 2",
+  segments.individuals_2 AS "individuals 2",
+  segments.percent2 AS "pct 2",
+  segments.species_south_3 AS "species 3",
+  segments.individuals_3 AS "individuals 3",
+  segments.percent3 AS "pct 3",
+  segments.species_south_4 AS "species 4",
+  segments.individuals_4 AS "individuals 4",
+  segments.percent4 AS "pct 4",
+  segments.species_south_5 AS "species 5",
+  segments.individuals_5 AS "individuals 5",
+  segments.percent5 AS "pct 5",
+  segments.species_south_6 AS "species 6",
+  segments.individuals_6 AS "individuals 6",
+  segments.percent6 AS "pct 6",
+  segments.species_south_7 AS "species 7",
+  segments.individuals_7 AS "individuals 7",
+  segments.percent7 AS "pct 7",
+  segments.species_south_8 AS "species 8",
+  segments.individuals_8 AS "individuals 8",
+  --segments.percent8 AS "pct 8",
+  segments.species_south_9 AS "species 9",
+  segments.individuals_9 AS "individuals 9",
+  --segments.percent9 AS "pct 9",
+  segments.species_south_10 AS "species 10",
+  segments.individuals_10 AS "individuals 10"
+  --segments.percent10 AS "pct 10",
+
+FROM "Botani" main
+LEFT JOIN "Botani/southern_units" event
+USING(_record_id)
+LEFT JOIN "Botani/segments" segments
+ON event._child_record_id = segments._parent_id
+
+WHERE main.unit = 'Mediterranean Transition Zone' AND event.date_south IS NOT NULL
