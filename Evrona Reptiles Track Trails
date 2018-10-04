@@ -1,0 +1,66 @@
+-- main:Evrona_Reptiles_2017
+--	season:Evrona_Reptiles_2017/season
+--		observations:Evrona_Reptiles_2017/reptile_observations
+--		tracks_trails:Evrona_Reptiles_2017/reptile_tracks_trails
+--		occasional:Evrona_Reptiles_2017/reptile_occ_in_obs
+
+-- Evrona Tracks Trails V 1.99
+SELECT
+  main.sampling_point,
+  main.site_disturbances,
+  main._status AS status,
+  main._record_id AS record_id,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+  main._geometry AS geometry,
+  --season.date_place,
+  to_char(date_trunc('day', season.date_r), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', season.observation_start_time), 'HH24:MI') AS time_start,
+  to_char(date_trunc('minute', season.observation_end_time), 'HH24:MI') AS time_end,
+  season.type_r AS type,
+  season.temp_sun,
+  season.temp_oil,
+  season.temp_shade,
+  season.weather,
+  season.total_observers,
+  season.monitors_name AS monitor_names_old,
+  season.monitor_names_new,
+  season._latitude AS season_lat,
+  season._longitude AS season_lon,
+  tracks_trails._child_record_id,
+  tracks_trails._latitude AS observation_lat,
+  tracks_trails._latitude AS observation_lon,
+  tracks_trails.protocol_t AS protocol,
+--  n1.species_latin,
+  CASE 
+  	WHEN array_length(tracks_trails.species_latin_t, 1) = 3 THEN tracks_trails.species_latin_t[3] 
+    WHEN array_length(tracks_trails.species_latin_t, 1) = 2 THEN tracks_trails.species_latin_t[2] 
+    ELSE tracks_trails.species_latin_t[1] 
+  END AS species,
+  to_char(date_trunc('minute', tracks_trails.observation_time_t), 'HH24:MI') AS observation_time,
+  tracks_trails.obs_count_t AS count,
+  tracks_trails.parameters_t AS parameters,
+  tracks_trails.status_t AS status,
+  tracks_trails.activity_ignore_t AS activity,
+  tracks_trails.obs_snout_len_t AS snout_length,
+  tracks_trails.obs_tail_len_t AS tail_length,
+  tracks_trails.tail_t AS tail,
+  tracks_trails.obs_regentail_len_t AS regentail_length,
+  tracks_trails.obs_ind_mass_t AS individual_mass,
+  tracks_trails.assumed_measurement_t AS assumed_measurement,
+  tracks_trails.oiled_substrate_t AS oiled_substrate,
+  tracks_trails.material_t AS material,
+  tracks_trails.orientation_t AS orientaion,
+  tracks_trails.photo_start_t AS photo_start,
+  tracks_trails.photo_end_t AS photo_end,
+  tracks_trails.camera_name_t AS camera_name,
+  tracks_trails.obs_notes_t AS notes,
+  tracks_trails.tracks_trail_no as tracks_trail_no
+
+FROM "Evrona_Reptiles_2017" main
+LEFT JOIN "Evrona_Reptiles_2017/season" season
+USING(_record_id)
+LEFT JOIN "Evrona_Reptiles_2017/reptile_tracks_trails" tracks_trails
+ON season._child_record_id = tracks_trails._parent_id
+
+WHERE season.date_r > '2018-01-01'
