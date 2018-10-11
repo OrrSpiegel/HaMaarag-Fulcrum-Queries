@@ -1,0 +1,49 @@
+-- main: Maarag Acacias
+--	observations :Maarag Acacias/acacia_observations
+
+-- Acacia Observations V1.0
+SELECT
+  main._status,
+  main.site,
+  main.tree_id,
+  main.sp AS "species",
+  main.stream,
+  main.plot_orientation,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+  
+  to_char(date_trunc('day', observations.date), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', observations.time), 'HH24:MI') AS time_start,
+  observations.monitors,
+  observations.foliage,
+  observations.flowers,
+  observations.pods,
+  observations.pelicosepalus_acaciae,
+  observations.ndvi_calibration,
+  observations.ndvi_picture,
+  observations.rgb_picture,
+  observations.photos,
+  observations.browsing,
+  observations.lowest_leaf_s_cm,
+  observations.browsing_height_s,
+  observations.lowest_leaf_e_cm,
+  observations.browsing_height_e,
+  observations.lowest_leaf_n_cm,
+  observations.browsing_height_n,
+  observations.lowest_leaf_w_cm,
+  observations.browsing_height_w,
+  observations.dendrometer,
+  observations.perimeter_cm,
+  observations.seedling,
+  observations.uninfected_pods,
+  observations.out_of,
+  observations.height,
+  observations.canopy_n_s,
+  observations.canopy_e_w,
+  observations.remarks
+
+FROM "Maarag Acacias" main
+LEFT JOIN "Maarag Acacias/acacia_observations" observations
+USING(_record_id)
+
+WHERE main.site = 'Shita'
