@@ -1,0 +1,49 @@
+-- main: Reptiles Monitoring Form - Spring 2015
+--	Observations: Reptiles Monitoring Form - Spring 2015/reptile_observations
+--	Observations: Reptiles Monitoring Form - Spring 2015/occ_reptile_observations
+-- Reptiles Occasional
+SELECT
+  main._status,
+--  main.unit,
+  main.site,
+--  main.proximity,
+  main.habitat,
+  main._record_id AS record_id,
+  main._latitude AS latitude,
+  main._longitude AS longitude,
+  to_char(date_trunc('day', main.date), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', main.time_start), 'HH24:MI') AS time_start,
+  to_char(date_trunc('minute', main.time_end), 'HH24:MI') AS time_end,
+  main.stones_flipped,
+  main.point_name,
+  main.weather,
+  main.temp_shade,
+  main.temp_sun,
+  main.site_descrption,
+  
+  CASE 
+  	WHEN array_length(observations.occ_species, 1) = 3 THEN observations.occ_species[3] 
+    WHEN array_length(observations.occ_species, 1) = 2 THEN observations.occ_species[2] 
+    ELSE observations.occ_species[1] 
+  END AS species,
+--  observations.protocol,
+  observations.occ_parameters,
+  observations.occ_status,
+  observations.occ_activity,
+  observations.occ_tail,
+  observations.occ_snout_len,
+  observations.occ_tail_len,
+  observations.occ_regentail_len,
+  observations.occ_assumed_measurement,
+  observations.occ_svt,
+  observations.occ_orientation,
+  observations.occ_material,
+  observations.occ_count,
+  observations.occ_notes  
+
+FROM "Reptiles Monitoring Form - Spring 2015" main
+LEFT JOIN "Reptiles Monitoring Form - Spring 2015/occ_reptile_observations" observations
+USING(_record_id)
+
+WHERE main._status <> 'None'
+AND (observations.occ_species IS NOT NULL)
