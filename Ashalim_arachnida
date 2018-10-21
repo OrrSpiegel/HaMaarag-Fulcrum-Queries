@@ -1,0 +1,46 @@
+-- main: Ashalim Arachnida
+--	sampling_event: Ashalim Arachnida/sampling_event
+--	observations: Ashalim Arachnida/observations
+
+-- Ashalim Arachnida Observations V1.0
+SELECT
+  main.stream,
+  main.type,
+  main.site,
+  main.plot,
+  
+  to_char(date_trunc('day', sampling_event.date), 'YYYY-MM-DD') AS date,
+  to_char(date_trunc('minute', sampling_event.time_start), 'HH24:MI') AS time_start,
+  to_char(date_trunc('minute', sampling_event.time_end), 'HH24:MI') AS time_end,
+	sampling_event.monitors_name,
+	sampling_event._latitude AS event_lat,
+	sampling_event._longitude AS event_lon,
+	sampling_event._geometry AS event_geo,
+    sampling_event.sampling_protocol,
+    sampling_event.temp,
+    sampling_event.exact_temp,
+    sampling_event.rh,
+    sampling_event.wind_yn AS wind,
+    sampling_event.wind_speed,
+    sampling_event.cloud_cover,
+    sampling_event.weather AS weather_remarks,
+    sampling_event.site_disturbances,
+    sampling_event.general_event_remarks,
+	observations.species_ly AS species_lycosidae,
+    observations.species_sc AS species_scorpions,
+    observations.species_web AS species_web,
+    observations.sex,
+    observations.count,
+    observations.notes_activity AS activity,
+    observations.microhabitat_notes AS microhabitat,
+    observations.presence_on_web,
+    observations.web_horizontal_cm,
+	observations.web_vertical_cm,
+    observations.web_depth_cm,
+    observations.web_placement,
+    observations.collected,
+    observations.sample_id,
+    observations.observation_remarks
+FROM "Ashalim Arachnida" main
+LEFT JOIN "Ashalim Arachnida/sampling_event" sampling_event USING(_record_id)
+LEFT JOIN "Ashalim Arachnida/observations" observations USING(_record_id)
